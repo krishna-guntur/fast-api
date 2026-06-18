@@ -23,4 +23,5 @@ def create_transaction(new_transaction : TransactionRequest):
     new_main_transaction = Transaction(
     **new_transaction.model_dump()
         )
+    new_main_transaction.transaction_id = len(transactions)+1 if new_main_transaction.transaction_id == None else new_main_transaction.transaction_id
     transactions.append(new_main_transaction)
