@@ -44,3 +44,24 @@ async def create_todo(db: db_dependency, new_todo: TodoRequest):
     )
     db.add(todo_model)
     db.commit()
+
+@app.put("/update_todo", status_code=status.HTTP_202_ACCEPTED)
+async def update_todo(db: db_dependency, update_to: TodoRequest, todo_id: int):
+
+    todo_model = db.query(TODOS).filter(TODOS.id == todo_id).first()
+
+    todo_model.title = update_to.title
+    todo_model.description = update_to.description
+    todo_model.priority = update_to.priority
+    todo_model.complete = update_to.complete
+
+    db.add(todo_model)
+    db.commit()
+
+@app.delete("/delete_todo", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_todo(db: db_dependency, todo_id: int):
+
+    todos_model = db.query(TODOS).filter(TODOS.id == todo_id).first()
+
+    db.delete(todos_model)
+    db.commit()
