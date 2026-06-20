@@ -8,9 +8,10 @@ from database import engine, local_session
 import models
 from models import TODOS
 from todoRequest import TodoRequest
-
+from routers import auth
 
 app = FastAPI()
+app.include_router(auth.router)
 
 models.Base.metadata.create_all(engine)
 
