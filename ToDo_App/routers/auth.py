@@ -14,7 +14,10 @@ from database import local_session
 from routers.users import CreateUser
 from models import USERS
 
-router = APIRouter()
+router = APIRouter(
+    prefix='/auth',
+    tags=['auth']
+)
 
 SECRET_KEY = 'ab09b68154f8cece068a572a482cfe0dbe3a8fc1128bc768f9c8291a61ebf8d3'
 ALGORITHM = 'HS256'
@@ -81,12 +84,15 @@ async def get_user(db: db_dependency, user_request: CreateUser):
     db.add(create_user_model)
     db.commit()
 
-@router.post("/auth_token")
+@router.post("/token")
 async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db: db_dependency):
 
     user = authenticate_user(form_data.username, form_data.password, db)
     if not user:
-        return 'Failed authentication'
+        return HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail='Could not validate user'
+            )
     token = create_access_token(user.username, user.id, timedelta(minutes=20))
 
     return {'token': token, 'token_type': 'bearer'}
