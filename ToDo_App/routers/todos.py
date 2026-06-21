@@ -6,6 +6,7 @@ from starlette import status
 from models import TODOS
 from database import local_session
 from todoRequest import TodoRequest
+from .auth import get_current_user
 
 
 router = APIRouter()
@@ -18,6 +19,7 @@ def get_db():
         db.close()
 
 db_dependency = Annotated[Session, Depends(get_db)]
+user_dependency = Annotated[dict, Depends(get_current_user)]
 
 @router.get("/get_todos")
 def get_all_todos(db: db_dependency):
@@ -34,9 +36,16 @@ async def get_todo(db: db_dependency, todo_id: int = Path(gt=0)):
     )
 
 @router.post("/create_todo", status_code=status.HTTP_201_CREATED)
-async def create_todo(db: db_dependency, new_todo: TodoRequest):
+async def create_todo(user: user_dependency,
+                      db: db_dependency, new_todo: TodoRequest):
+    print(user.get('username'))
+    print(user.get('user_id'))
+
+    if user is None:
+        raise HTTPException(status_code=401, detail="Authentication Failed")
     todo_model = TODOS(
-        **new_todo.model_dump()
+        **new_todo.model_dump(),
+        owner_id= user.get('user_id')
     )
     db.add(todo_model)
     db.commit()
