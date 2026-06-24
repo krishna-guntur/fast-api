@@ -1,5 +1,6 @@
 from datetime import timedelta, datetime, timezone
 from typing import Annotated
+import logging, random
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -13,13 +14,18 @@ from database import local_session
 from routers.users import CreateUser
 from models import USERS
 
+logging.basicConfig(
+    filename='logs/auth.log',
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S',
+    force=True
+)
+
 router = APIRouter(
     prefix='/auth',
     tags=['auth']
 )
-
-SECRET_KEY = 'ab09b68154f8cece068a572a482cfe0dbe3a8fc1128bc768f9c8291a61ebf8d3'
-ALGORITHM = 'HS256'
 
 bcrypt_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl='auth/token')
@@ -72,7 +78,9 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
         )
 
 @router.post("/create-user", status_code=status.HTTP_201_CREATED)
-async def get_user(db: db_dependency, user_request: CreateUser):
+async def create_user(db: db_dependency, user_request: CreateUser):
+
+    logging.info("User request received")
     create_user_model = USERS(
         email = user_request.email,
         username = user_request.username,
@@ -82,9 +90,14 @@ async def get_user(db: db_dependency, user_request: CreateUser):
         hashed_password=bcrypt_context.hash(user_request.password),
         is_active=True
     )
+    try:
+        db.add(create_user_model)
+        db.commit()
 
-    db.add(create_user_model)
-    db.commit()
+        logging.info(f"User created successfully with user_name: {user_request.username}")
+
+    except Exception as e:
+        logging.error(f"Error while creating the user - {e}")
 
 @router.post("/token")
 async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db: db_dependency):
