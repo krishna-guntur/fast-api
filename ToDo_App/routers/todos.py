@@ -4,31 +4,26 @@ from sqlalchemy.orm import Session
 from starlette import status
 
 from ToDo_App.database.database_models import TODOS
-from ToDo_App.database.database import local_session
+from ToDo_App.database.database import get_db
 from ToDo_App.models.todoRequest import TodoRequest
 from .auth import get_current_user
 
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/todos",
+    tags=["todos"]
+)
 
-def get_db():
-    db = local_session()
-    try:
-        yield db
-    finally:
-        db.close()
-
+print(id(get_db))
 db_dependency = Annotated[Session, Depends(get_db)]
 user_dependency = Annotated[dict, Depends(get_current_user)]
 
 @router.get("/get_todos")
-def get_all_todos(user: user_dependency, db: db_dependency):
+def get_all_todos(user: user_dependency, 
+                  db: db_dependency):
     if user is None:
         return "Authentication Failed"
-    
     try:
-        print(f"user.id = {user.get('id')}")
-        print(f"user.name = {user.get('name')}")
         return db.query(TODOS).filter(TODOS.owner_id == user.get('user_id')).all()
     except Exception as e:
         raise HTTPException(

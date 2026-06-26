@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 from fastapi import status
-import main
+from ToDo_App import main
 
 client = TestClient(main.app)
 

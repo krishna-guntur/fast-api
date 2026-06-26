@@ -15,4 +15,3 @@ def health_check():
 app.include_router(auth.router)
 app.include_router(todos.router)
 app.include_router(users.router)
-
