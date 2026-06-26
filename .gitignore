@@ -1,4 +1,4 @@
 .idea/
 fastapi_env/
-ToDo_App/config.ini
 ToDo_App/logs/
+ToDo_App/config/
