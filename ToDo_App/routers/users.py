@@ -1,11 +1,7 @@
-from pydantic import BaseModel
+from fastapi import FastAPI, APIRouter
 
+Users = APIRouter()
 
-class CreateUser(BaseModel):
-
-    email: str
-    username: str
-    first_name: str
-    last_name: str
-    password: str
-    role: str
+@Users.get("/get-user")
+async def get_user():
+    pass

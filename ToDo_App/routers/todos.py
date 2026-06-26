@@ -3,9 +3,9 @@ from typing import Annotated
 from sqlalchemy.orm import Session
 from starlette import status
 
-from models import TODOS
-from database import local_session
-from todoRequest import TodoRequest
+from database.database_models import TODOS
+from database.database import local_session
+from models.todoRequest import TodoRequest
 from .auth import get_current_user
 
 
