@@ -2,10 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from typing import Annotated
 from sqlalchemy.orm import Session
 
-from database.database import get_db
-from database.database_models import USERS
+from ToDo_App.database.database import get_db
+from ToDo_App.database.database_models import USERS
 from .auth import get_current_user
-from config.config import (SECRET_KEY, ALGORITHM, bcrypt_context, oauth2_bearer)
+from ToDo_App.config.config import (SECRET_KEY, ALGORITHM, bcrypt_context, oauth2_bearer)
 
 router = APIRouter(
     prefix="/users",
@@ -32,7 +32,7 @@ async def get_user(user: user_dependency, db: db_dependency):
         )
     return user_model
 
-@router.get("/change-password")
+@router.put("/change-password")
 async def change_password(user: user_dependency,
                           db: db_dependency,
                           new_password):
