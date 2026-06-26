@@ -8,13 +8,13 @@ from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from starlette import status
 from jose import jwt, JWTError
 
-from models.users import CreateUser
-from database.database_models import USERS
-from database.database import get_db
-from config.config import (SECRET_KEY, ALGORITHM, bcrypt_context, oauth2_bearer)
+from ToDo_App.models.users import CreateUser
+from ToDo_App.database.database_models import USERS
+from ToDo_App.database.database import get_db
+from ToDo_App.config.config import (SECRET_KEY, ALGORITHM, bcrypt_context, oauth2_bearer)
 
 logging.basicConfig(
-    filename='logs/auth.log',
+    filename=r'ToDo_App\logs\auth.log',
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S',
