@@ -29,8 +29,6 @@ def test_todo():
     db.add(todo)
     db.commit()
 
-    print(db.query(TODOS).all())
-
     yield todo
     with engine.connect() as connection:
         connection.execute(text("DELETE FROM TODOS;"))
@@ -39,7 +37,7 @@ def test_todo():
 def test_get_all_todos(test_todo):
 
     response = client.get("/todos/get_todos")
-    pprint(response.json())
+    
     assert response.status_code == status.HTTP_200_OK
     assert response.json() == [{
         "id": 1,
@@ -48,4 +46,47 @@ def test_get_all_todos(test_todo):
         "priority": 1,
         "complete": False,
         "owner_id": 1
-}]
+        }]
+    
+def test_get_todo(test_todo):
+
+    response = client.get("/todos/get_todos/1")
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response.json() == {
+        "id": 1,
+        "title": "Test Title",
+        "description": "Test desc",
+        "priority": 1,
+        "complete": False,
+        "owner_id": 1
+        }
+    
+def test_create_to(test_todo):
+
+    request = {        
+        "title": "Test Title",
+        "description": "Test desc",
+        "priority": 1,
+        "complete": False,        
+        }
+
+    response = client.post("/todos/create_todo", json=request)
+    assert response.status_code == 201
+
+def test_update_todo(test_todo):
+
+    request = {        
+        "title": "Test Title PUT",
+        "description": "Test desc",
+        "priority": 3,
+        "complete": False,        
+        }
+
+    response = client.put("/todos/update_todo/1", json=request)
+    assert response.status_code == 202
+
+def test_delete_todo(test_todo):
+
+    response = client.delete("/todos/delete_todo/1")
+    assert response.status_code == 204

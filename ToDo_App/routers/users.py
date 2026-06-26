@@ -32,7 +32,7 @@ async def get_user(user: user_dependency, db: db_dependency):
         )
     return user_model
 
-@router.get("/change-password")
+@router.put("/change-password")
 async def change_password(user: user_dependency,
                           db: db_dependency,
                           new_password):

@@ -57,7 +57,7 @@ async def create_todo(user: user_dependency,
     db.add(todo_model)
     db.commit()
 
-@router.put("/update_todo", status_code=status.HTTP_202_ACCEPTED)
+@router.put("/update_todo/{todo_id}", status_code=status.HTTP_202_ACCEPTED)
 async def update_todo(user: user_dependency, 
                       db: db_dependency, update_to: TodoRequest, todo_id: int):
     
@@ -72,7 +72,7 @@ async def update_todo(user: user_dependency,
     db.add(todo_model)
     db.commit()
 
-@router.delete("/delete_todo", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/delete_todo/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_todo(user: user_dependency,
                       db: db_dependency, todo_id: int):
     
