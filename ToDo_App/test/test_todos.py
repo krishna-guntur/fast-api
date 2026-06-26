@@ -43,9 +43,9 @@ def test_get_all_todos(test_todo):
     assert response.status_code == status.HTTP_200_OK
     assert response.json() == [{
         "id": 1,
-  "title": "Test Title",
-  "description": "Test desc",
-  "priority": 1,
-  "complete": False,
-  "owner_id": 1
+        "title": "Test Title",
+        "description": "Test desc",
+        "priority": 1,
+        "complete": False,
+        "owner_id": 1
 }]
