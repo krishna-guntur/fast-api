@@ -1,4 +1,14 @@
+# IDE
+.vscode/
 .idea/
+
+# venv
 fastapi_env/
+
+# logs and config
 ToDo_App/logs/
 ToDo_App/config/
+
+# Byte-compiled files
+__pycache__/
+*.py[cod]
