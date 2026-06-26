@@ -13,7 +13,9 @@ from jose import jwt, JWTError
 from database import local_session
 from routers.users import CreateUser
 from models import USERS
-from 
+
+SECRET_KEY = 'ab09b68154f8cece068a572a482cfe0dbe3a8fc1128bc768f9c8291a61ebf8d3'
+ALGORITHM = 'HS256'
 
 logging.basicConfig(
     filename='logs/auth.log',
