@@ -22,8 +22,20 @@ db_dependency = Annotated[Session, Depends(get_db)]
 user_dependency = Annotated[dict, Depends(get_current_user)]
 
 @router.get("/get_todos")
-def get_all_todos(db: db_dependency):
-    return db.query(TODOS).all()
+def get_all_todos(user: user_dependency, db: db_dependency):
+    if user is None:
+        return "Authentication Failed"
+    
+    try:
+        print(f"user.id = {user.get('id')}")
+        print(f"user.name = {user.get('name')}")
+        return db.query(TODOS).filter(TODOS.owner_id == user.get('user_id')).all()
+    except Exception as e:
+        raise HTTPException(
+            status_code=404,
+            detail="Not found"
+        )
+
 
 @router.get("/get_todos/{todo_id}", status_code=status.HTTP_200_OK)
 async def get_todo(user: user_dependency,
