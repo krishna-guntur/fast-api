@@ -6,16 +6,12 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from starlette import status
-
-from passlib.context import CryptContext
 from jose import jwt, JWTError
 
-from database import local_session
-from routers.users import CreateUser
-from models import USERS
-
-SECRET_KEY = 'ab09b68154f8cece068a572a482cfe0dbe3a8fc1128bc768f9c8291a61ebf8d3'
-ALGORITHM = 'HS256'
+from models.users import CreateUser
+from database.database_models import USERS
+from database.database import get_db
+from config.config import (SECRET_KEY, ALGORITHM, bcrypt_context, oauth2_bearer)
 
 logging.basicConfig(
     filename='logs/auth.log',
@@ -29,16 +25,6 @@ router = APIRouter(
     prefix='/auth',
     tags=['auth']
 )
-
-bcrypt_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
-oauth2_bearer = OAuth2PasswordBearer(tokenUrl='auth/token')
-
-def get_db():
-    db = local_session()
-    try:
-        yield db
-    finally:
-        db.close()
 
 db_dependency = Annotated[Session, Depends(get_db)]
 
